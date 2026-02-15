@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📦 Product Inventory Manager — QA Testing App
 
-## Getting Started
+A full-stack **Product Inventory Manager** built with **Next.js** and **Neon PostgreSQL**, designed as a testing playground for QA engineers to practice:
 
-First, run the development server:
+- ✅ **UI Testing** — Login, register, CRUD operations, search, filter, pagination
+- ✅ **API Testing** — RESTful endpoints with JWT authentication
+- ✅ **SQL Testing** — Direct database queries, schema validation, data integrity
 
+---
+
+## 🏗️ Tech Stack
+
+| Layer    | Technology          |
+|----------|---------------------|
+| Frontend | Next.js (React)     |
+| Backend  | Next.js API Routes  |
+| Database | Neon PostgreSQL     |
+| Auth     | JWT + bcrypt        |
+| Deploy   | Vercel              |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- A [Neon](https://neon.tech) PostgreSQL database
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment
+Copy `.env.local` and update with your credentials:
+```env
+DATABASE_URL=postgresql://username:password@your-neon-host.neon.tech/dbname?sslmode=require
+JWT_SECRET=your-super-secret-jwt-key
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 3. Setup Database
+Run the `schema.sql` file on your Neon database to create tables and seed data:
+```sql
+-- Execute schema.sql via Neon Console or pgAdmin
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Dev Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+### 5. Demo Login
+```
+Email:    admin@example.com
+Password: password123
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📋 API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/auth/register` | ❌ | Register new user |
+| POST | `/api/auth/login` | ❌ | Login & get JWT |
+| GET | `/api/auth/me` | ✅ | Get current user |
+| GET | `/api/products` | ✅ | List products (search, filter, paginate, sort) |
+| GET | `/api/products/:id` | ✅ | Get product detail |
+| POST | `/api/products` | ✅ | Create product |
+| PUT | `/api/products/:id` | ✅ | Update product |
+| DELETE | `/api/products/:id` | ✅ | Delete product |
+| GET | `/api/categories` | ✅ | List categories |
+| POST | `/api/categories` | ✅ | Create category |
 
-## Deploy on Vercel
+### Authentication
+All protected endpoints require a JWT token in the `Authorization` header:
+```
+Authorization: Bearer <your-jwt-token>
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Query Parameters (GET /api/products)
+- `search` — Search by name or description
+- `category` — Filter by category ID
+- `page` — Page number (default: 1)
+- `limit` — Items per page (default: 10)
+- `sort` — Sort column: name, price, stock, created_at (default: created_at)
+- `order` — Sort order: asc, desc (default: desc)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🗄️ Database Schema
+
+```sql
+-- users: id, name, email, password, role, created_at
+-- categories: id, name, description
+-- products: id, name, description, price, stock, category_id, created_by, created_at, updated_at
+```
+
+See `schema.sql` for full DDL and seed data.
+
+---
+
+## 🧪 Testing Guide
+
+### UI Testing
+- Login & register flow
+- CRUD products (Add, Edit, Delete)
+- Search & category filter
+- Table sorting by columns
+- Pagination navigation
+- Form validation (empty fields, invalid email, etc.)
+- Success/error messages
+- Modal open/close behavior
+- Responsive design
+
+### API Testing (Postman)
+- Test all endpoints with valid/invalid tokens
+- Test input validation (missing fields, wrong types)
+- Test edge cases (duplicate email, non-existent product)
+- Test query parameters combinations
+- Verify correct HTTP status codes
+
+### SQL Testing
+- Verify table structure and constraints
+- Test foreign key relationships
+- Run SELECT queries with JOINs
+- Test INSERT/UPDATE/DELETE with constraints
+- Verify data integrity after operations
+
+---
+
+## 📁 Project Structure
+
+```
+Testing App/
+├── schema.sql              # Database DDL + seed data
+├── .env.local              # Environment variables
+├── src/
+│   ├── app/
+│   │   ├── layout.js       # Root layout
+│   │   ├── page.js         # Login/Register page
+│   │   ├── globals.css     # Design system
+│   │   ├── dashboard/
+│   │   │   └── page.js     # Dashboard (CRUD, search, filter)
+│   │   └── api/
+│   │       ├── auth/       # register, login, me
+│   │       ├── products/   # CRUD + [id]
+│   │       └── categories/ # list + create
+│   ├── lib/
+│   │   ├── db.js           # PostgreSQL connection pool
+│   │   └── auth.js         # JWT helpers
+│   └── components/
+│       ├── LoginForm.js
+│       ├── RegisterForm.js
+│       ├── Navbar.js
+│       ├── ProductTable.js
+│       ├── ProductModal.js
+│       ├── SearchBar.js
+│       └── Pagination.js
+```

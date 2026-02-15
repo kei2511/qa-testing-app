@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
-  reactCompiler: true,
+  // Enable standalone output for production deployment
+  output: 'standalone',
 };
 
 export default nextConfig;
